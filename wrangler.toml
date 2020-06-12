@@ -1,0 +1,6 @@
+name = "email-worker"
+type = "rust"
+account_id = "4b53615f0f1c00b8a6c8b3d694848674"
+workers_dev = true
+route = ""
+zone_id = ""
