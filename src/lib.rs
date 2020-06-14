@@ -1,8 +1,3 @@
-extern crate cfg_if;
-extern crate handlebars;
-extern crate reqwest;
-extern crate wasm_bindgen;
-
 mod utils;
 
 use cfg_if::cfg_if;
@@ -19,19 +14,19 @@ cfg_if! {
     }
 }
 
-pub async fn fetch_template(template_name: &str) -> reqwest::Result<String> {
+pub fn fetch_template(template_name: &str) -> reqwest::Result<String> {
     let url = format!(
         "https://raw.githubusercontent.com/vladinator1000/email-worker/master/templates/{}.hbs",
         template_name
     );
-    let response = reqwest::get(&url).await?.text().await?;
+    let response = reqwest::blocking::get(&url)?.text();
 
     Ok(format!("{:#?}", response))
 }
 
 #[wasm_bindgen]
-pub async fn send(_to: String, _from: String, template_name: String, _data: String) -> String {
-    let template = fetch_template(&template_name).await.unwrap();
+pub fn send(_to: String, _from: String, template_name: String, _data: String) -> String {
+    let template = fetch_template(&template_name).unwrap();
     let handlebars = Handlebars::new();
 
     let data = ();
