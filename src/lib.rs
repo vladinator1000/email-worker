@@ -1,4 +1,6 @@
 extern crate cfg_if;
+extern crate handlebars;
+extern crate reqwest;
 extern crate wasm_bindgen;
 
 mod utils;
@@ -17,12 +19,12 @@ cfg_if! {
     }
 }
 
-pub async fn fetch_template(_template_name: &str) -> reqwest::Result<String> {
-    let response =
-        reqwest::get("https://gist.github.com/vladinator1000/68dc63e30fa6397c8dcf4cabd619d2e0/raw/655eb4f6481a219e2fe29b7b4819ba6a3f2b43f0/signup_email_template.hbs")
-            .await?
-            .text()
-            .await?;
+pub async fn fetch_template(template_name: &str) -> reqwest::Result<String> {
+    let url = format!(
+        "https://raw.githubusercontent.com/vladinator1000/email-worker/master/templates/{}.hbs",
+        template_name
+    );
+    let response = reqwest::get(&url).await?.text().await?;
 
     Ok(format!("{:#?}", response))
 }

@@ -9,6 +9,7 @@ mod tests {
     #[tokio::test]
     async fn fetch() {
         let template = fetch_template(TEMPLATE_NAME).await.unwrap();
+
         assert_eq!(template, EXPECTED_TEMPLATE);
     }
 
