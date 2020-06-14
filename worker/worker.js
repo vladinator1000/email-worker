@@ -9,6 +9,15 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
     const { send } = wasm_bindgen;
     await wasm_bindgen(wasm)
+    
     const email = send()
-    return new Response(email, {status: 200})
+
+    const init = {
+      status: 200,
+      headers: {
+        'content-type': 'text/html;charset=UTF-8',
+      },
+    }
+
+    return new Response(email, init)
 }

@@ -1,13 +1,10 @@
 extern crate cfg_if;
-extern crate handlebars;
 extern crate wasm_bindgen;
 
 mod utils;
 
 use cfg_if::cfg_if;
-use handlebars::{
-    to_json, Context, Handlebars, Helper, JsonRender, Output, RenderContext, RenderError,
-};
+use handlebars::Handlebars;
 use wasm_bindgen::prelude::*;
 
 cfg_if! {
@@ -20,17 +17,21 @@ cfg_if! {
     }
 }
 
+pub async fn fetch_template(_template_name: &str) -> reqwest::Result<String> {
+    let response =
+        reqwest::get("https://gist.github.com/vladinator1000/68dc63e30fa6397c8dcf4cabd619d2e0/raw/655eb4f6481a219e2fe29b7b4819ba6a3f2b43f0/signup_email_template.hbs")
+            .await?
+            .text()
+            .await?;
+
+    Ok(format!("{:#?}", response))
+}
+
 #[wasm_bindgen]
-pub fn send() -> String {
-    // let mut handlebars = Handlebars::new();
+pub async fn send(_to: String, _from: String, template_name: String, _data: String) -> String {
+    let template = fetch_template(&template_name).await.unwrap();
+    let handlebars = Handlebars::new();
 
-    let name = "signup_venue";
-    // // register template from a file and assign a name to it
-    // handlebars
-    //     .register_template_file(name, "../templates/signup_venue.hbs")
-    //     .unwrap();
-
-    // let data = ();
-    // handlebars.render(name, &data).unwrap();
-    name.to_string()
+    let data = ();
+    handlebars.render_template(&template, &data).unwrap()
 }
